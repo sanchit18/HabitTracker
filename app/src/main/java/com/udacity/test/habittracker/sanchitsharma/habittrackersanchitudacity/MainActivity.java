@@ -18,8 +18,26 @@ public class MainActivity extends AppCompatActivity {
         insertHabit("CompleteOverDueUdacityProjects", 2, "29 October 2017");
         insertHabit("TreatOnProjectMeetsSpecification", 1, "28 October 2017");
         insertHabit("Workout", 1, "29 October 2017");
-        readHabits();
-        deleteAlHabits();
+        Cursor c = readHabits();
+        try {
+            int habit = c.getColumnIndex(DBContractClass.Habits.HabitName);
+            int count = c.getColumnIndex(DBContractClass.Habits.HabitOccuranceCount);
+            int date = c.getColumnIndex(DBContractClass.Habits.HabitOccuranceDate);
+
+            System.out.println("***********-----------Database (From OnCreate)--------------************/n");
+            if (c != null && c.moveToFirst()) {
+                do {
+                    System.out.println("HabitName :  " + c.getString(habit));
+                    System.out.println("HabitOccuranceCount: " + Integer.toString(c.getInt(count)));
+                    System.out.println("HabitOccuranceDate : " + c.getString(date));
+                    System.out.println("-----------------------------------------------");
+                } while (c.moveToNext());
+            }
+
+            c.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //CURD : Insert
@@ -48,20 +66,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //CURD : Read
-    public void readHabits() {
+    public Cursor readHabits() {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        String querysql = "SELECT * FROM habits";
+        Cursor c = db.rawQuery(querysql, null);
         try {
-
-            SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-            String querysql = "SELECT * FROM habits";
-
-            Cursor c = db.rawQuery(querysql, null);
-
             int habit = c.getColumnIndex(DBContractClass.Habits.HabitName);
             int count = c.getColumnIndex(DBContractClass.Habits.HabitOccuranceCount);
             int date = c.getColumnIndex(DBContractClass.Habits.HabitOccuranceDate);
 
-            System.out.println("***********-----------Database--------------************/n");
+            System.out.println("***********-----------Database (From Read Function)--------------************/n");
             if (c != null && c.moveToFirst()) {
                 do {
                     System.out.println("HabitName :  " + c.getString(habit));
@@ -71,10 +85,11 @@ public class MainActivity extends AppCompatActivity {
                 } while (c.moveToNext());
             }
 
-            c.close();
+            c.moveToFirst();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return c;
     }
 
 }
