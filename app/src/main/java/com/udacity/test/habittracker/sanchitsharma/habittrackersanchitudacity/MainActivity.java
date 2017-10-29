@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 public class MainActivity extends AppCompatActivity {
 
     private DBHelperClass dbHelper = new DBHelperClass(this); //DB Created via helper class constructor (CURD : Create)
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,17 +22,15 @@ public class MainActivity extends AppCompatActivity {
         deleteAlHabits();
     }
 
-
-
     //CURD : Insert
-    public void insertHabit(String habitName, Integer count, String date){
+    public void insertHabit(String habitName, Integer count, String date) {
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(DBContractClass.Habits.HabitName, habitName);
-        values.put(DBContractClass.Habits.HabitOccuranceCount, count );
-        values.put(DBContractClass.Habits.HabitOccuranceDate, date );
+        values.put(DBContractClass.Habits.HabitOccuranceCount, count);
+        values.put(DBContractClass.Habits.HabitOccuranceDate, date);
 
         db.insertWithOnConflict(DBContractClass.Habits.Table_Name,
                 null,
@@ -49,12 +48,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //CURD : Read
-    public void readHabits(){
+    public void readHabits() {
         try {
 
             SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-            String querysql= "SELECT * FROM habits";
+            String querysql = "SELECT * FROM habits";
 
             Cursor c = db.rawQuery(querysql, null);
 
@@ -63,13 +62,13 @@ public class MainActivity extends AppCompatActivity {
             int date = c.getColumnIndex(DBContractClass.Habits.HabitOccuranceDate);
 
             System.out.println("***********-----------Database--------------************/n");
-            if (c != null && c.moveToFirst()){
+            if (c != null && c.moveToFirst()) {
                 do {
                     System.out.println("HabitName :  " + c.getString(habit));
                     System.out.println("HabitOccuranceCount: " + Integer.toString(c.getInt(count)));
                     System.out.println("HabitOccuranceDate : " + c.getString(date));
                     System.out.println("-----------------------------------------------");
-                } while(c.moveToNext());
+                } while (c.moveToNext());
             }
 
             c.close();
